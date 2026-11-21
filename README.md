@@ -4,9 +4,7 @@
 > 本文件 = 项目总览（所有版本 / 效果 / 代码位置 / 改造方式）；详细方案与使用说明见 `USE.md`；版本变更见 `CHANGELOG.md`。
 
 **在线地址（已部署 · 2026-11-21）**：https://czy-cmd.github.io/AXIOM-K4/
-
 **源码仓库**：https://github.com/czy-cmd/AXIOM-K4
-
 > 旧预览方式（`https://htmlpreview.github.io/?...`）已停用，旧仓库内嵌的 `K4-Alpha3/` 目录已删除；网页文件现位于仓库根目录，线上地址为上述 Pages 地址。
 
 ## 简介
@@ -37,7 +35,7 @@ AXIOM 是一款极简打字训练系统。它把练习、关卡、人机对战�
 ## 2. 效果一览（AXIOM 已实现）
 
 - **登录**：分栏极简布局，左栏 `AX.` logo 靠左；登录 / 注册 + 游客 / 无痕 / 调试三个并列入口；登录后弹出《用户协议与数据说明》，每账号一次。
-- **练习**：17 篇内置文章（含 4 篇时政政策常识科普），分类筛选、收藏、字数显示；逐字着色、5 分钟计时、准确率 / 分数实时统计。
+- **练习**：17 篇内置文章（含 4 篇时政政策常识科普），分类筛选、收藏、字数显示；逐字着色、5 分钟计时、准确率 / 分数实时统计。**支持导入自定义 JSON / TXT 文本**（JSON 格式兼容 1.0 版 `articles.json`：`[{"id":1,"difficulty":"简单","paragraphs":["段落…"]}]`；TXT 按空行分段），导入后归入「自定义」分类。
 - **人机对战**：Codex 五级难度 minimal / low / medium / high / xhigh，连续拖动 + 260ms 缓动吸附；YOU 与 OTHER AGENTS 进度同屏，对手进度靠右；可选 8 / 12 / 16 个 AGENT。
 - **关卡**：5 类主题 × 4 段，共 20 关，评级达标解锁；关卡 ID 与 Alpha2 一致，老存档解锁进度可用。
 - **纪录**：积分、最高分、平均准确率、错字本（可生成专项练习）、成绩列表与 CSV 导出。
@@ -61,6 +59,13 @@ K4-Alpha3/
 │   ├── index.html / style.css / app.js / articles.js / config.js
 │   └── README.md / USE.md / CHANGELOG.md / config.json
 ├── docs/              # Pages 备用目录（同等网页文件）
+├── launcher.pyw       # 本地启动器（Alpha2 形态）：开始打字 + 打开网页版 + 简介 + 拟真加载进度条
+├── app.py             # 本地主程序（1314 行）：登录/协议/菜单/文章/打字/对战/关卡/纪录/设置/日志/调试
+├── core/              # 本地数据层：theme / content / content_data / difficulty / importer / storage / debug
+├── ui/                # 本地控件层：widgets（主题按钮/卡片/进度轨/开关/滚动面板）
+├── data/              # 本地新存档 user_data.json + custom_articles.json（导入的文本）
+├── assets/            # 图标
+├── tests/             # 测试（用临时数据目录）
 └── web/               # 已交付：纯原生 HTML/CSS/JS，无依赖
     ├── index.html     # 单页入口（登录 → 菜单 → 各功能页 → 弹层）
     ├── style.css      # 三主题 CSS 变量 + 三打开模式样式 + 响应式
@@ -69,7 +74,11 @@ K4-Alpha3/
     └── config.js      # 难度参数、限时、固定调试口令、存储键
 ```
 
-后续 exe 端规划目录（尚未创建）：`launcher.pyw`、`app.py`、`core/`（theme / articles / levels / difficulty / storage / debug / changelog）、`ui/`（login_view / menu_view / versus_setup / race_hud / settings_view 等）、`data/user_data.json`、`tests/`。详见 `USE.md` 第 1 节。
+**本地端运行**：双击 `launcher.pyw`（需系统 Python 3.11 关联 `.pyw`）→ 点「开 始 打 字」，拟真进度条走完自动进入主程序；也可点「打 开 网 页 版」（在线优先，断网提示并回退本地 HTML）或「简 介」；还可直接 `python app.py`。本机已验证 22 项冒烟测试全部通过（临时数据目录，未触碰 Alpha2 存档）。打包 exe 与安装程序留待下次一次性完成。
+
+动效：网页端（`style.css` + `app.js` 的 `animateIn`）与本地端（`ui/anim.py` 逐帧引擎）都参照 PCL2 的动画手法——OutCubic 缓动、视图淡入、卡片/列表错峰进场、按钮按下快回弹慢。两端均尊重系统「减少动态效果」；本地端如需彻底关闭可设环境变量 `AXIOM_NO_ANIM=1`。启动器的加载提示为随机池（24 条，每次抽 6~9 条随进度切换），文字不闪动。
+
+数据保护：`storage.py` 提供 `configure(app_dir, data_dir)`，测试时把 `AXIOM_DATA_DIR` 指向临时目录即可重定向；Alpha2 的 `typing_userdata.json` / `typing.db` 只读，导入旧档需用户在设置页手动点击，绝不自动扫描或回写。
 
 ---
 

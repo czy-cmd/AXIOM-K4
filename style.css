@@ -90,6 +90,92 @@ button { cursor: pointer; }
 .view { display: none; min-height: 100vh; flex-direction: column; }
 .view.active { display: flex; }
 
+/* ==========================================================
+   动效系统 · 参照 PCL2 动画手法
+   克制、快速、微位移、轻缩放；主力曲线 OutCubic。
+   90% 动作在 50~200ms 完成，错峰(stagger)营造节奏感。
+   ========================================================== */
+:root {
+  --pcl-out: cubic-bezier(.215, .61, .355, 1);        /* OutFluent Middle · 主力 */
+  --pcl-out-weak: cubic-bezier(.25, .46, .45, .94);
+  --pcl-out-strong: cubic-bezier(.165, .84, .44, 1);
+  --pcl-in: cubic-bezier(.55, .055, .675, .19);
+  --pcl-back: cubic-bezier(.18, .89, .32, 1.22);      /* 温和回弹 ~18% */
+  --pcl-back-weak: cubic-bezier(.25, .85, .32, 1.18);
+}
+
+/* 视图切换：淡入 + 极轻上移，约 220ms */
+.view.active {
+  animation: view-in 220ms var(--pcl-out) both;
+}
+@keyframes view-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* 通用错峰进场：由 JS 给元素加 .anim-in 并设 --i */
+.anim-in { opacity: 0; }
+.anim-in.run { animation: item-in 300ms var(--pcl-back-weak) both; animation-delay: calc(var(--i, 0) * 25ms); }
+@keyframes item-in {
+  0%   { opacity: 0; transform: translateY(-14px); }
+  35%  { opacity: 1; transform: translateY(-7px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+/* 横向版本（左栏风格） */
+.anim-in-x.run { animation-name: item-in-x; }
+@keyframes item-in-x {
+  0%   { opacity: 0; transform: translateX(-20px); }
+  40%  { opacity: 1; transform: translateX(-5px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+
+/* 按钮：按下快、回弹慢（PCL 非对称节奏） */
+.btn, .chip, .level-btn, .menu-card, .list-row, .star-btn {
+  transition: background-color 200ms var(--pcl-out), border-color 200ms var(--pcl-out),
+              color 200ms var(--pcl-out), transform 300ms var(--pcl-out),
+              box-shadow 200ms var(--pcl-out);
+}
+.btn:hover, .chip:hover { transition-duration: 100ms, 100ms, 100ms, 300ms, 100ms; }
+.btn:active, .chip:active, .level-btn:active { transform: scale(.96); transition-duration: 80ms; }
+.btn.primary:active { filter: brightness(1.06); }
+
+/* 菜单卡 hover：微抬升 + 阴影加强 */
+.menu-card { transition: transform 180ms var(--pcl-out), box-shadow 180ms var(--pcl-out), border-color 120ms var(--pcl-out); }
+.menu-card:hover { transform: translateY(-2px); box-shadow: 0 10px 26px rgba(30, 28, 20, .12); }
+html[data-theme="dark"] .menu-card:hover { box-shadow: 0 10px 26px rgba(0, 0, 0, .42); }
+
+/* 进度条：平滑过渡（进度条本身已 linear，这里给 stat/num 变化兜底） */
+.num, .points, .timer { transition: color 180ms var(--pcl-out); }
+
+/* 弹层：轻缩放淡入 + 上移（PCL 消息弹窗做法） */
+.modal:not([hidden]) .modal-box { animation: modal-in 260ms var(--pcl-back-weak) both; }
+@keyframes modal-in {
+  from { opacity: 0; transform: translateY(16px) scale(.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.modal:not([hidden]) { animation: modal-veil 160ms var(--pcl-out) both; }
+@keyframes modal-veil { from { opacity: 0; } to { opacity: 1; } }
+
+/* toast：从下方滑入 */
+.toast:not([hidden]) { animation: toast-in 240ms var(--pcl-back-weak) both; }
+@keyframes toast-in {
+  from { opacity: 0; transform: translate(-50%, 18px); }
+  to   { opacity: 1; transform: translate(-50%, 0); }
+}
+
+/* 打字逐字着色：轻微反馈 */
+.type-text span.ch-correct, .type-text span.ch-wrong { animation: ch-pop 120ms var(--pcl-out) both; }
+@keyframes ch-pop { from { transform: scale(1.18); } to { transform: scale(1); } }
+
+/* 尊重系统「减少动态效果」设置 */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-delay: 0ms !important;
+    transition-duration: .01ms !important;
+  }
+}
+
 /* ---------- 通用控件 ---------- */
 .btn {
   border: 1px solid var(--border);
@@ -292,7 +378,7 @@ body[data-session="debug"] .debug-panel { display: block; }
 .lead-tag { color: var(--orange); font-weight: 700; }
 .bar { height: 8px; background: var(--panel2); border-radius: 4px; overflow: hidden; }
 .hud-others .bar, .agent-row .bar { display: flex; justify-content: flex-end; }
-.fill { height: 100%; width: 0; border-radius: 4px; transition: width .25s linear; }
+.fill { height: 100%; width: 0; border-radius: 4px; transition: width .3s var(--pcl-out); }
 .hud-others .fill, .agent-row .fill { flex: 0 0 auto; }
 .you-fill { background: var(--accent); }
 .lead-fill { background: var(--orange); }

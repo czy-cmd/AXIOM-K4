@@ -71,6 +71,35 @@
   /* ---------- 通用 ---------- */
   let currentView = 'login-view';
   let toastTimer = null;
+
+  /* 动效：错峰进场（PCL 风格）。给容器内匹配元素打上 .anim-in 并逐项启动。
+     opts = {x:true 横向进场, step:25 每项间隔ms, max:12 最多参与项数} */
+  const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function animateIn(container, selector, opts) {
+    if (!container || reduceMotion) return;
+    opts = opts || {};
+    const nodes = Array.prototype.slice.call(container.querySelectorAll(selector || ':scope > *'));
+    const step = opts.step || 25;
+    const max = opts.max || 12;
+    nodes.slice(0, max).forEach((n, i) => {
+      n.classList.add('anim-in');
+      if (opts.x) n.classList.add('anim-in-x');
+      n.style.setProperty('--i', i);
+      n.classList.remove('run');
+      // 强制回流，确保移除后重新触发动画
+      void n.offsetWidth;
+      n.classList.add('run');
+    });
+  }
+  // 清理动画类，避免下次渲染时以透明态闪一下
+  function clearAnim(container, selector) {
+    if (!container) return;
+    container.querySelectorAll(selector || '.anim-in').forEach(n => {
+      n.classList.remove('anim-in', 'anim-in-x', 'run');
+      n.style.removeProperty('--i');
+    });
+  }
+
   function toast(msg) {
     const t = $('toast');
     t.textContent = msg; t.hidden = false;
@@ -92,6 +121,11 @@
     if (id === 'changelog-view') renderChangelog();
     if (id === 'typing-view') updateCaret();
     updateDebugOverlay();
+    // 视图进场后对静态卡片做错峰动画（动态列表在各 render 内部处理）
+    const view = $(id);
+    if (view && id === 'menu-view') animateIn(view, '.menu-card', { step: 35 });
+    if (view && id === 'login-view') animateIn(view, '.brand-title, .brand-rule, .brand-slogan, .login-card', { step: 45 });
+    if (view && id === 'versus-view') animateIn(view, '.difficulty-box, .field-row, .button-row', { step: 40 });
   }
   document.querySelectorAll('[data-goto]').forEach(b => {
     b.addEventListener('click', () => showView(b.dataset.goto));
@@ -269,6 +303,8 @@
       row.addEventListener('click', () => { selectedArticle = a.id; renderArticles(); });
       wrap.appendChild(row);
     });
+    animateIn(box, '.chip', { step: 18, max: 12 });
+    animateIn(wrap, '.list-row', { step: 18, max: 14 });
   }
   $('btn-start-article').addEventListener('click', () => {
     const a = ARTICLES.find(x => x.id === selectedArticle);
@@ -396,6 +432,8 @@
       });
       grid.appendChild(b);
     }
+    animateIn(box, '.chip', { step: 18, max: 12 });
+    animateIn(grid, '.level-btn', { step: 30, max: 8 });
   }
 
   /* ---------- 打字核心 ---------- */
@@ -759,6 +797,7 @@
           (r.difficulty ? ' · ' + escapeHtml(r.difficulty) : '') + '</div></div><div class="row-meta">' +
           r.score + ' 分 · ' + r.grade + '</div></div>').join('')
       : '<div class="list-row muted">暂无成绩</div>';
+    animateIn($('rec-stats'), '.stat-card', { step: 35, max: 4 });
   }
   $('btn-export-records').addEventListener('click', () => {
     const recs = (ud().records || []).slice().reverse();
@@ -839,6 +878,7 @@
       return '<div class="change-block"><div class="change-head"><h3>' + escapeHtml(c.version) + '</h3><span>' +
         escapeHtml(c.date) + '</span></div>' + group('ADDED', c.added) + group('CHANGED', c.changed) + group('FIXED', c.fixed) + '</div>';
     }).join('');
+    animateIn($('changelog-body'), '.change-block', { step: 45, max: 10 });
   }
 
   /* ---------- 数据导入导出 / 清空 ---------- */
