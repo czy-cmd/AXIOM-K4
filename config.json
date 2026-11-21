@@ -1,0 +1,11 @@
+{
+  "product": "AXIOM",
+  "model": "K4",
+  "edition": "Alpha 3",
+  "remote_url": "https://czy-cmd.github.io/AXIOM-K4/",
+  "source_url": "https://github.com/czy-cmd/AXIOM-K4",
+  "local_html": "web/index.html",
+  "network_message": "网络故障，尝试打开本地html中……",
+  "net_timeout_seconds": 6,
+  "version": "K4-Alpha3"
+}
