@@ -3,6 +3,10 @@
 > 产品名 **AXIOM**，型号 **K4**，版本 **Alpha 3**。
 > 本文件 = 项目总览（所有版本 / 效果 / 代码位置 / 改造方式）；详细方案与使用说明见 `USE.md`；版本变更见 `CHANGELOG.md`。
 
+**在线地址（已部署 · 2026-11-21）**：https://czy-cmd.github.io/AXIOM-K4/
+**源码仓库**：https://github.com/czy-cmd/AXIOM-K4
+> 旧预览方式（`https://htmlpreview.github.io/?...`）已停用，旧仓库内嵌的 `K4-Alpha3/` 目录已删除；网页文件现位于仓库根目录，线上地址为上述 Pages 地址。
+
 ## 简介
 
 AXIOM 是一款极简打字训练系统。它把练习、关卡、人机对战与成绩记录收进同一套冷峻界面：文章可自由选读，逐字着色实时反馈；人机对战提供 minimal 到 xhigh 五档难度，你的进度与对手进度同屏可见。支持浅色、深色、跟随系统三套主题，以及 exe、网页、手机三种打开模式。内置错字本、成绩导出、文章收藏与更新日志；调试模式需口令进入，全程不写存档。少一点花哨，多一点准确——AXIOM 只保留打字本身。
@@ -50,7 +54,11 @@ K4-Alpha3/
 ├── README.md          # 本文件：总览 / 效果 / 代码位置 / 改造方式
 ├── USE.md             # 原 README：完整行动方案、数据约束、验收清单、参考来源
 ├── CHANGELOG.md       # 相对 Alpha2 的更新日志
-├── config.json        # 产品/型号/版本 + remote_url + 断网提示 + 超时
+├── config.json        # 产品/型号/版本 + remote_url（Pages 地址）+ source_url（仓库）+ 断网提示 + 超时
+├── deploy/            # GitHub Pages 发布包（根目录结构，含 .nojekyll）
+│   ├── index.html / style.css / app.js / articles.js / config.js
+│   └── README.md / USE.md / CHANGELOG.md / config.json
+├── docs/              # Pages 备用目录（同等网页文件）
 └── web/               # 已交付：纯原生 HTML/CSS/JS，无依赖
     ├── index.html     # 单页入口（登录 → 菜单 → 各功能页 → 弹层）
     ├── style.css      # 三主题 CSS 变量 + 三打开模式样式 + 响应式
@@ -93,6 +101,7 @@ K4-Alpha3/
 
 ## 6. 运行与验证
 
-- 网页版：直接双击 `web/index.html`，或用浏览器打开 GitHub Pages 地址。
+- 网页版：直接双击 `web/index.html` 离线运行，或打开 https://czy-cmd.github.io/AXIOM-K4/ 在线运行（两者功能一致）。
+- Pages 源文件在 `deploy/`（与 `web/` 内容一致，多了 `.nojekyll`），仓库根目录结构保证网址不带子路径。
 - 回归：Edge 无头 + CDP 已验证登录 / 协议 / 打字 / 实体按钮 / 五档吸附与对齐 / 输入法 / 三主题 / 三模式 / 调试口令与无存储会话 / 存档落盘 / 390px 手机视口。
 - 调试口令：`devczy`。含 AI 生成内容，请注意辨别。
