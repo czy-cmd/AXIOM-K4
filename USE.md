@@ -2,7 +2,7 @@
 
 > **文档分工**：`README.md` = 项目总览（所有版本 / 效果 / 代码位置 / 改造方式）；本文件 `USE.md` = 详细行动方案、数据约束、验收清单与参考来源；`CHANGELOG.md` = 相对 Alpha2 的更新日志。
 > **产品命名**：**AXIOM**（产品名 / 品牌），**K4** 是型号（Keyboard 4），**Alpha 3** 是版本号。完整称谓 `AXIOM · Model K4 / Alpha 3`；内部代号、目录名、存档键仍沿用 `K4-Alpha3` 以保证数据兼容。
-> 状态：**方案已定稿，网页版已按最新决定更新；本轮先落地 `web/`（HTML 先行）**。exe 端待用户提供 GitHub 网址后接入。
+> 状态：**方案已定稿，网页版已部署上线（2026-11-21）**：https://czy-cmd.github.io/AXIOM-K4/ ，仓库 https://github.com/czy-cmd/AXIOM-K4 。exe 端待建。
 > 约束：所有文件名使用英文；保留 Alpha2 数据文件原样，不读、不改、不覆盖。
 
 ## 简介
@@ -24,12 +24,12 @@ AXIOM 是一款极简打字训练系统，型号 K4，当前版本 Alpha 3。它
 | `web/app.js` | 登录/注册、协议、打字、对战、关卡、纪录、设置、调试、存档 |
 | `web/articles.js` | 17 篇文章 + 4 篇时政科普 + 协议正文 + 更新日志内容 |
 | `web/config.js` | 5 档难度参数、限时、固定调试密码、存储键等网页侧配置 |
-| `config.json` | `remote_url` 留空；拿到 GitHub 网址后填入，exe 端实现网址优先 + 断网回退 |
+| `config.json` | `remote_url` = https://czy-cmd.github.io/AXIOM-K4/ ；`source_url` = https://github.com/czy-cmd/AXIOM-K4 ；exe 端实现网址优先 + 断网回退 |
 | `CHANGELOG.md` | K4-Alpha3 相对 Alpha2 的更新日志；程序内更新日志另含 Alpha2 / Alpha / Beta-01 |
 
 **已验证**：无头浏览器回归通过（注册 → 协议 → 选文 → 打字 → 实体按钮 → 5 档难度吸附 → 主题/模式切换 → 调试口令 → 调试会话导出 log → 存档落盘）；17 篇文章、4 篇时政科普、手机 390px 视口布局正常。
 
-**待用户提供**：GitHub 网址（填入 `config.json`）、协议正式文案（如有）。调试密码已固定为 `devczy`，无需再提供。
+**待用户提供**：协议正式文案（如有）。GitHub 网址已配置并部署；调试密码已固定为 `devczy`，无需再提供。
 
 ---
 
@@ -195,7 +195,7 @@ K4-Alpha3/
 
 ### R9 网页模式（三种打开模式 + 网址优先 / 本地兜底）
 
-**打开链路**（用户指定）：exe 启动 → 读 `config.json` 的 `remote_url` → 默认用系统浏览器打开 GitHub 网址 → 连接失败/超时则显示提示 **「网络故障，尝试打开本地html中……」** 并打开 `web/index.html`。网址暂空，用户提供后填入；本地 HTML 始终保留可离线双击使用。
+**打开链路**（用户指定）：exe 启动 → 读 `config.json` 的 `remote_url` → 默认用系统浏览器打开 https://czy-cmd.github.io/AXIOM-K4/ → 连接失败/超时则显示提示 **「网络故障，尝试打开本地html中……」** 并打开 `web/index.html`。本地 HTML 始终保留可离线双击使用。
 
 **设置页「打开模式」三选一（用户指定）**，决定布局与存档介质：
 
