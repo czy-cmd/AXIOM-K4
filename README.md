@@ -4,7 +4,9 @@
 > 本文件 = 项目总览（所有版本 / 效果 / 代码位置 / 改造方式）；详细方案与使用说明见 `USE.md`；版本变更见 `CHANGELOG.md`。
 
 **在线地址（已部署 · 2026-11-21）**：https://czy-cmd.github.io/AXIOM-K4/
+
 **源码仓库**：https://github.com/czy-cmd/AXIOM-K4
+
 > 旧预览方式（`https://htmlpreview.github.io/?...`）已停用，旧仓库内嵌的 `K4-Alpha3/` 目录已删除；网页文件现位于仓库根目录，线上地址为上述 Pages 地址。
 
 ## 简介
